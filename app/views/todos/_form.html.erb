@@ -1,0 +1,64 @@
+<%# Todoフォームパーシャル %>
+<%# パーシャル：再利用可能なビューの部品 %>
+<%# ファイル名が _ で始まるのがパーシャルの規約 %>
+<%# このフォームは新規作成（new.html.erb）と編集（edit.html.erb）で共有される %>
+
+<%# form_with: Railsのフォームヘルパー %>
+<%# model: @todo - フォームがどのモデルと関連するか %>
+<%# Railsが自動的に適切なURL、HTTPメソッドを判断：
+#   - @todo.new_record? が true なら POST /todos (create)
+#   - @todo.new_record? が false なら PATCH /todos/:id (update) %>
+<%= form_with(model: todo, local: true) do |form| %>
+  <%# バリデーションエラーの表示 %>
+  <%# errors.any?: エラーがあるかチェック %>
+  <% if todo.errors.any? %>
+    <div id="error_explanation">
+      <h2>
+        <%# pluralize: 数に応じて単数形・複数形を切り替える %>
+        <%= pluralize(todo.errors.count, "個のエラー") %>が発生しました：
+      </h2>
+      <ul>
+        <%# full_messages: エラーメッセージの配列 %>
+        <% todo.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# タイトルフィールド %>
+  <div class="form-group">
+    <%# label: ラベルタグを生成 %>
+    <%= form.label :title, 'タイトル' %>
+    <%# text_field: テキスト入力フィールドを生成 %>
+    <%# placeholder: プレースホルダーテキスト %>
+    <%# required: HTML5のrequired属性（クライアント側バリデーション） %>
+    <%= form.text_field :title,
+      placeholder: 'Todoのタイトルを入力（3〜255文字）',
+      required: true
+    %>
+  </div>
+
+  <%# 説明フィールド %>
+  <div class="form-group">
+    <%= form.label :description, '説明' %>
+    <%# text_area: 複数行テキスト入力を生成 %>
+    <%# rows: 表示行数 %>
+    <%= form.text_area :description,
+      rows: 5,
+      placeholder: 'Todoの詳細説明を入力（任意、最大1000文字）'
+    %>
+  </div>
+
+  <%# 送信ボタン %>
+  <div>
+    <%# submit: 送信ボタンを生成 %>
+    <%# Railsが自動的にボタンテキストを判断：
+    #   - 新規作成時："Create Todo"
+    #   - 更新時："Update Todo" %>
+    <%= form.submit '保存', class: 'btn btn-primary' %>
+
+    <%# キャンセルボタン（一覧に戻る） %>
+    <%= link_to 'キャンセル', todos_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>

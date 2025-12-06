@@ -1,0 +1,36 @@
+{
+  "name": "Rails TODO App",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rebornix.ruby",
+        "castwide.solargraph",
+        "kaiwood.endwise",
+        "Shopify.ruby-lsp",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "ruby.intellisense": "rubyLocate",
+        "ruby.codeCompletion": "rcodetools",
+        "editor.formatOnSave": true,
+        "files.associations": {
+          "*.html.erb": "erb"
+        }
+      }
+    }
+  },
+
+  "forwardPorts": [3000],
+
+  // "postCreateCommand": "bundle install && rails db:create db:migrate",
+
+  "remoteUser": "root",
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+  }
+}

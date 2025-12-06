@@ -1,0 +1,121 @@
+<%# Todo一覧ページ %>
+<%# このビューはTodosController#indexアクションで表示される %>
+<%# @todos: コントローラーから渡されたTodo一覧 %>
+
+<h2>Todo一覧</h2>
+
+<%# 統計情報の表示 %>
+<%# ERBタグ: <% %>（実行のみ）、<%= %>（実行して出力） %>
+<div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+  <strong>統計情報：</strong>
+  <%# count: ActiveRecordのメソッド、レコード数を取得 %>
+  全 <%= @todos.count %> 件 |
+  <%# スコープを使用して未完了・完了済みの件数を取得 %>
+  未完了 <%= Todo.incomplete.count %> 件 |
+  完了済み <%= Todo.completed.count %> 件
+</div>
+
+<%# 新規作成ボタン %>
+<%# link_to: Railsのヘルパーメソッド、リンクを生成 %>
+<%# new_todo_path: Railsが自動生成するURLヘルパー（/todos/new） %>
+<%# class: HTMLのclass属性 %>
+<%= link_to '新しいTodoを作成', new_todo_path, class: 'btn btn-primary' %>
+
+<%# Todoが存在するかチェック %>
+<% if @todos.any? %>
+  <%# テーブルでTodo一覧を表示 %>
+  <table>
+    <thead>
+      <tr>
+        <th>タイトル</th>
+        <th>説明</th>
+        <th>ステータス</th>
+        <th>完了日時</th>
+        <th>作成日時</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%# each: Rubyのイテレータ、配列の各要素に対して処理を実行 %>
+      <%# ブロック変数 todo: 各Todoオブジェクト %>
+      <% @todos.each do |todo| %>
+        <tr>
+          <%# タイトル（リンク） %>
+          <td>
+            <%# todo_path(todo): 詳細ページへのリンク（/todos/:id） %>
+            <%= link_to todo.title, todo_path(todo) %>
+          </td>
+
+          <%# 説明（長い場合は切り詰め） %>
+          <td>
+            <%# truncate: 文字列を指定した長さで切り詰める %>
+            <%# omission: 省略記号 %>
+            <%= truncate(todo.description, length: 50, omission: '...') %>
+          </td>
+
+          <%# ステータス（バッジで表示） %>
+          <td>
+            <%# 条件分岐：完了済みか未完了かでCSSクラスを変える %>
+            <span class="badge <%= todo.completed? ? 'badge-completed' : 'badge-incomplete' %>">
+              <%# status: モデルで定義したメソッド（"完了" または "未完了"） %>
+              <%= todo.status %>
+            </span>
+          </td>
+
+          <%# 完了日時 %>
+          <td>
+            <%# &.: 安全なナビゲーション演算子（nilの場合はnilを返す） %>
+            <%# formatted_completed_at: モデルで定義したメソッド %>
+            <%= todo.formatted_completed_at || '-' %>
+          </td>
+
+          <%# 作成日時 %>
+          <td>
+            <%# strftime: 日時をフォーマット %>
+            <%= todo.created_at.strftime('%Y/%m/%d %H:%M') %>
+          </td>
+
+          <%# 操作ボタン %>
+          <td>
+            <%# ステータス切り替えボタン %>
+            <%# button_to: フォームを生成するヘルパー（GETではなくPATCH/POST/DELETE用） %>
+            <%# method: :patch - HTTPメソッドを指定 %>
+            <%# data: { turbo_confirm: '...' } - 確認ダイアログを表示 %>
+            <%= button_to(
+              todo.completed? ? '未完了に戻す' : '完了にする',
+              toggle_completion_todo_path(todo),
+              method: :patch,
+              class: 'btn btn-warning',
+              form: { style: 'display: inline-block;' }
+            ) %>
+
+            <%# 詳細表示ボタン %>
+            <%= link_to '詳細', todo_path(todo), class: 'btn btn-secondary' %>
+
+            <%# 編集ボタン %>
+            <%= link_to '編集', edit_todo_path(todo), class: 'btn btn-secondary' %>
+
+            <%# 削除ボタン %>
+            <%# method: :delete - HTTPのDELETEメソッドを使用 %>
+            <%# data: { turbo_method: :delete } - Turboを使用して削除 %>
+            <%# data: { turbo_confirm: '...' } - 削除前に確認ダイアログを表示 %>
+            <%= button_to '削除',
+              todo_path(todo),
+              method: :delete,
+              class: 'btn btn-danger',
+              form: {
+                style: 'display: inline-block;',
+                data: { turbo_confirm: '本当に削除しますか？' }
+              }
+            %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <%# Todoが存在しない場合のメッセージ %>
+  <p style="margin-top: 20px; color: #6c757d;">
+    まだTodoがありません。新しいTodoを作成してください。
+  </p>
+<% end %>

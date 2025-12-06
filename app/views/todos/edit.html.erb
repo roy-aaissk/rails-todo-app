@@ -1,0 +1,15 @@
+<%# Todo編集ページ %>
+<%# このビューはTodosController#editアクションで表示される %>
+<%# @todo: コントローラーから渡された既存のTodoオブジェクト %>
+
+<h2>Todo編集</h2>
+
+<%# パーシャルの呼び出し %>
+<%# 新規作成と同じフォームを使用（DRY原則） %>
+<%# @todoには既存のデータが入っているため、フォームに初期値が表示される %>
+<%= render 'form', todo: @todo %>
+
+<%# 詳細ページに戻るリンク %>
+<div style="margin-top: 20px;">
+  <%= link_to '詳細に戻る', todo_path(@todo), class: 'btn btn-secondary' %>
+</div>

@@ -1,0 +1,12 @@
+<%# Todo新規作成ページ %>
+<%# このビューはTodosController#newアクションで表示される %>
+<%# @todo: コントローラーから渡された新しいTodoオブジェクト %>
+
+<h2>新しいTodo作成</h2>
+
+<%# パーシャルの呼び出し %>
+<%# render: パーシャルを描画 %>
+<%# 'form': app/views/todos/_form.html.erb を探す（_は自動的に付く） %>
+<%# todo: @todo - パーシャルにローカル変数として渡す %>
+<%# DRY原則：フォームのコードを new と edit で共有 %>
+<%= render 'form', todo: @todo %>

@@ -1,0 +1,79 @@
+<%# Todo詳細ページ %>
+<%# このビューはTodosController#showアクションで表示される %>
+<%# @todo: コントローラーから渡された特定のTodoオブジェクト %>
+
+<h2>Todo詳細</h2>
+
+<%# 詳細情報をテーブルで表示 %>
+<table style="margin-bottom: 20px;">
+  <tbody>
+    <%# タイトル行 %>
+    <tr>
+      <th style="width: 150px;">タイトル</th>
+      <td><%= @todo.title %></td>
+    </tr>
+
+    <%# 説明行 %>
+    <tr>
+      <th>説明</th>
+      <td>
+        <%# simple_format: 改行を<br>タグに変換 %>
+        <%# presence: 値がある場合はその値、ない場合はnil %>
+        <%= simple_format(@todo.description.presence || '説明なし') %>
+      </td>
+    </tr>
+
+    <%# ステータス行 %>
+    <tr>
+      <th>ステータス</th>
+      <td>
+        <span class="badge <%= @todo.completed? ? 'badge-completed' : 'badge-incomplete' %>">
+          <%= @todo.status %>
+        </span>
+      </td>
+    </tr>
+
+    <%# 完了日時行 %>
+    <tr>
+      <th>完了日時</th>
+      <td><%= @todo.formatted_completed_at || '-' %></td>
+    </tr>
+
+    <%# 作成日時行 %>
+    <tr>
+      <th>作成日時</th>
+      <td><%= @todo.created_at.strftime('%Y年%m月%d日 %H:%M') %></td>
+    </tr>
+
+    <%# 更新日時行 %>
+    <tr>
+      <th>更新日時</th>
+      <td><%= @todo.updated_at.strftime('%Y年%m月%d日 %H:%M') %></td>
+    </tr>
+  </tbody>
+</table>
+
+<%# 操作ボタン %>
+<div>
+  <%# ステータス切り替えボタン %>
+  <%= button_to(
+    @todo.completed? ? '未完了に戻す' : '完了にする',
+    toggle_completion_todo_path(@todo),
+    method: :patch,
+    class: 'btn btn-warning'
+  ) %>
+
+  <%# 編集ボタン %>
+  <%= link_to '編集', edit_todo_path(@todo), class: 'btn btn-secondary' %>
+
+  <%# 削除ボタン %>
+  <%= button_to '削除',
+    todo_path(@todo),
+    method: :delete,
+    class: 'btn btn-danger',
+    form: { data: { turbo_confirm: '本当に削除しますか？' } }
+  %>
+
+  <%# 一覧に戻るボタン %>
+  <%= link_to '一覧に戻る', todos_path, class: 'btn btn-secondary' %>
+</div>
